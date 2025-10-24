@@ -34,7 +34,7 @@ const openSauce = localFont({
 });
 
 const blanquotey = localFont({
-  src: "../../.next/blanquotey/Blanquotey.ttf",
+  src: "../../public/fonts/Blanquotey.ttf",
   variable: "--font-blanquotey",
   weight: "400",
   display: "swap",
@@ -60,9 +60,7 @@ export default function RootLayout({
             <SplashScreen />
             {/* <ConditionalNavbar /> */}
             <RevealMount />
-            <AppPadding>
-              {children}
-            </AppPadding>
+            <AppPadding>{children}</AppPadding>
           </AuthProvider>
         </LocaleProvider>
       </body>
