@@ -14,7 +14,7 @@ export default function SplashScreen() {
     setMounted(true);
     try {
       const path = typeof window !== 'undefined' ? (window.location?.pathname || '') : '';
-      const isHome = path === '/newhome' || path === '/newhome/';
+      const isHome = path === '/' || path === '' || path === '/newhome' || path === '/newhome/';
       const already = typeof window !== 'undefined' && sessionStorage.getItem('oyz_splash_shown') === '1';
       if (!isHome || already) {
         setShow(false);

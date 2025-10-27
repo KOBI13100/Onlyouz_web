@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import LoginModal from "@/components/auth/LoginModal";
+import RegisterModal from "@/components/auth/RegisterModal";
 import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import Search from "./Search";
@@ -52,7 +54,11 @@ const Navbar: React.FC<NavbarProps> = ({
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+  const [loginOpen, setLoginOpen] = React.useState(false);
+  const [registerOpen, setRegisterOpen] = React.useState(false);
+
   return (
+    <>
     <header className={`fixed top-0 z-50 w-full bg-transparent transition-transform duration-300 will-change-transform ${isHidden ? '-translate-y-full' : 'translate-y-0'}`}>
       <div className="mx-auto max-w-7xl px-4 pt-6">
         <nav className={`${showSearch ? 'w-[min(92vw,1100px)]' : 'w-fit'} mx-auto flex flex-col items-stretch ${showSearch ? 'gap-1' : 'gap-0'} rounded-full bg-white/80 backdrop-blur-lg border border-black/10 shadow-[inset_0_2px_12px_rgba(0,0,0,0.08)] ${showSearch ? 'px-6 md:px-7 py-[1.4rem]' : 'px-4 md:px-5 py-[0.8rem]'} text-black transition-all duration-300`}>
@@ -115,8 +121,8 @@ const Navbar: React.FC<NavbarProps> = ({
                 </>
               ) : (
                 <>
-                  <a href="/connexion" className="text-[14px] font-medium text-black hover:text-black/80">Connexion</a>
-                  <SignUpButton />
+                  <button onClick={() => setLoginOpen(true)} className="text-[14px] font-medium text-black hover:text-black/80">Connexion</button>
+                  <SignUpButton onClick={() => setRegisterOpen(true)} />
                   <LanguageSwitcher variant="compact" />
                 </>
               )}
@@ -148,6 +154,23 @@ const Navbar: React.FC<NavbarProps> = ({
         </nav>
       </div>
     </header>
+    <LoginModal
+      open={loginOpen}
+      onClose={() => setLoginOpen(false)}
+      onSwitchToRegister={() => {
+        setLoginOpen(false);
+        setRegisterOpen(true);
+      }}
+    />
+    <RegisterModal
+      open={registerOpen}
+      onClose={() => setRegisterOpen(false)}
+      onSwitchToLogin={() => {
+        setRegisterOpen(false);
+        setLoginOpen(true);
+      }}
+    />
+    </>
   );
 };
 

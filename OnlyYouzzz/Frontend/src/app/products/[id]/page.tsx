@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ProductActions from "./ProductActions";
 import MediaCarousel from "./MediaCarousel";
+import FavoriteHeart from "./FavoriteHeart";
 import RelatedProducts from "./RelatedProducts";
 
 type Product = {
@@ -63,6 +64,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
             key={product.id}
             images={(product.imageUrls && product.imageUrls.length ? product.imageUrls : (product.imageUrl ? [product.imageUrl] : []))}
             videos={product.videoUrls || []}
+            topRightOverlay={<FavoriteHeart productId={product.id} />}
           />
         </div>
         <div className="space-y-4" data-reveal-group>
@@ -92,7 +94,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
             </div>
           ) : null}
 
-          {/* Actions: commander, favoris, back */}
+          {/* Actions: commander (favori déplacé sur l'image) */}
           <ProductActions productId={product.id} vendorId={product.sellerId} />
         </div>
       </div>

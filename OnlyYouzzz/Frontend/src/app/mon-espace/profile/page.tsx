@@ -4,7 +4,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import Image from "next/image";
 
 export default function ProfilePage() {
-  const { user, token, updateUser } = useAuth();
+  const { user, token, updateUser, logout } = useAuth();
   if (!user) return null;
 
   const [name, setName] = React.useState(user.name);
@@ -70,6 +70,21 @@ export default function ProfilePage() {
 
       <div className="p-0">
         <div className="max-w-4xl mx-auto">
+          <div className="mb-3 flex justify-end">
+            <button
+              type="button"
+              onClick={logout}
+              title="Déconnexion"
+              className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-medium text-black/70 hover:text-black hover:bg-black/5"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <path d="M16 17l5-5-5-5" />
+                <path d="M21 12H9" />
+              </svg>
+              Déconnexion
+            </button>
+          </div>
           {/* Avatar Section */}
           <div className="bg-white rounded-2xl border border-black/10 p-8 mb-8 shadow-sm">
             <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">

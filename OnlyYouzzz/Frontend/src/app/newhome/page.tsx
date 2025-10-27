@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import Logo from "@/components/navbar/Logo";
 import { useAuth } from "@/providers/AuthProvider";
 import SiteFooter from "@/components/home/SiteFooter";
+import LoginModal from "@/components/auth/LoginModal";
+import RegisterModal from "@/components/auth/RegisterModal";
 import SplashScreen from "@/components/SplashScreen";
 
 type Vendor = {
@@ -39,7 +41,7 @@ const auctionIcon = require("@/auction.svg");
 // @ts-ignore - static png icon
 const certifIcon = require("@/certif2.png");
 // @ts-ignore - static png for profile/avatar icon
-const profileIcon = require("@/profile3.png");
+const profileIcon = require("@/image.png");
 
 export default function NewHome() {
   const { user, logout } = useAuth();
@@ -115,6 +117,8 @@ export default function NewHome() {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const langRef = React.useRef<HTMLDivElement | null>(null);
   const menuRef = React.useRef<HTMLDivElement | null>(null);
+  const [loginOpen, setLoginOpen] = React.useState(false);
+  const [registerOpen, setRegisterOpen] = React.useState(false);
   const vendorSegmentRef = React.useRef<HTMLDivElement | null>(null);
   const productSegmentRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -189,75 +193,48 @@ export default function NewHome() {
   return (
     <div className="relative">
       <SplashScreen />
-      {menuOpen ? (
+      <div className={`fixed inset-0 z-[9998] ${menuOpen ? '' : 'pointer-events-none'}`} aria-hidden={!menuOpen}>
+        <div
+          className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-150 ${menuOpen ? 'opacity-100' : 'opacity-0'}`}
+          onClick={() => setMenuOpen(false)}
+        />
         <aside
           id="burger-panel"
           ref={menuRef}
-          className="fixed right-0 top-0 z-40 h-screen w-72 border-l border-gray-200 bg-white shadow-2xl p-4"
+          className={`absolute right-0 top-0 h-full w-72 md:w-80 border-l border-gray-200 bg-white shadow-2xl p-4 transition-transform duration-150 will-change-transform ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
         >
-          <div className="flex items-center justify-between px-3">
-            <div className="text-sm font-semibold text-black/70">Menu</div>
+          <div className="flex items-center justify-between">
+            <div className="pl-3 text-sm font-semibold text-black">Menu</div>
             <button
               onClick={() => setMenuOpen(false)}
               aria-label="Fermer"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-black/70 hover:text-black transition-transform will-change-transform hover:rotate-90"
+              className="group inline-flex h-8 w-8 items-center justify-center text-black/70 hover:text-black"
             >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden
-              >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="group-hover:animate-spin" style={{ animationDuration: '0.033s' }}>
                 <line x1="18" y1="6" x2="6" y2="18" />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
-          <div className="h-px bg-black/20 my-2" />
-          <nav className="mt-1 flex flex-col text-sm divide-y divide-black/10">
-            <Link href="/" className="px-3 py-3 md:py-3.5 hover:bg-gray-50">
-              Accueil
+          <div className="my-2 px-3"><div className="h-px bg-black/10" /></div>
+          <nav className="mt-1 flex flex-col text-sm">
+            <Link href="/" className="group px-3 py-2 md:py-2.5">
+              <span className="inline-block rounded-md px-2 py-1 transition-colors group-hover:bg-black/5">Accueil</span>
             </Link>
-            <Link
-              href="/vendors"
-              className="px-3 py-3 md:py-3.5 hover:bg-gray-50"
-            >
-              Vendeurs
+            <Link href="/vendors" className="group px-3 py-2 md:py-2.5">
+              <span className="inline-block rounded-md px-2 py-1 transition-colors group-hover:bg-black/5">Vendeurs</span>
             </Link>
-            <Link
-              href="/products"
-              className="px-3 py-3 md:py-3.5 hover:bg-gray-50"
-            >
-              Catalogue
+            <Link href="/products" className="group px-3 py-2 md:py-2.5">
+              <span className="inline-block rounded-md px-2 py-1 transition-colors group-hover:bg-black/5">Catalogue</span>
             </Link>
-            <Link
-              href="/enchères"
-              className="px-3 py-3 md:py-3.5 hover:bg-gray-50"
-            >
-              Enchères
-            </Link>
-            <Link
-              href="/mon-espace"
-              className="px-3 py-3 md:py-3.5 hover:bg-gray-50"
-            >
-              Mon espace
-            </Link>
-            <Link
-              href="/mon-espace/settings"
-              className="px-3 py-3 md:py-3.5 hover:bg-gray-50"
-            >
-              Réglages
+            <Link href="/mon-espace" className="group px-3 py-2 md:py-2.5">
+              <span className="inline-block rounded-md px-2 py-1 transition-colors group-hover:bg-black/5">Mon espace</span>
             </Link>
           </nav>
         </aside>
-      ) : null}
+      </div>
       <div
-        className={`min-h-screen w-full bg-white overflow-x-hidden ${
-          menuOpen ? "pr-72" : "pr-0"
-        }`}
+        className={`min-h-screen w-full bg-white overflow-x-hidden`}
       >
         {/* Icon font for Flaticon UIcons (bold-rounded) */}
         <link
@@ -283,7 +260,7 @@ export default function NewHome() {
                         alt=""
                         width={16}
                         height={16}
-                        className="h-6 w-6 rounded-full object-cover"
+                        className="h-4 w-4 object-contain"
                       />
                     </span>
                     <span className="font-medium">Vendeurs</span>
@@ -320,7 +297,7 @@ export default function NewHome() {
                   </Link>
                 </nav>
               </div>
-              <div className="hidden md:flex items-center gap-6 mt-2">
+              <div className="hidden md:flex items-center gap-2 mt-2">
                 {/* Connexion/Deconnexion text to the left of language selector */}
                 {user ? (
                   <button
@@ -331,20 +308,20 @@ export default function NewHome() {
                     deconnexion
                   </button>
                 ) : (
-                  <Link
-                    href="/connexion"
+                  <button
+                    onClick={() => setLoginOpen(true)}
                     className="text-[14px] font-medium text-black hover:text-black/80"
                     title="connexion"
                   >
                     connexion
-                  </Link>
+                  </button>
                 )}
                 <div className="relative" ref={langRef}>
                   <button
                     onClick={() => setLangOpen((v) => !v)}
                     aria-haspopup="menu"
                     aria-expanded={langOpen}
-                    className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:shadow-md transition-shadow"
+                    className="w-10 h-10 rounded-full bg-gray-100/85 flex items-center justify-center text-black/80 hover:bg-gray-100 transition-colors"
                   >
                     <svg
                       width="18"
@@ -400,7 +377,7 @@ export default function NewHome() {
                   onClick={() => setMenuOpen((v) => !v)}
                   aria-expanded={menuOpen}
                   aria-controls="burger-panel"
-                  className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:shadow-md transition-shadow"
+                  className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-black/80 hover:bg-gray-200 transition-colors"
                 >
                   <svg
                     width="18"
@@ -484,10 +461,10 @@ export default function NewHome() {
                       />
                       <label
                         htmlFor="vendor-search"
-                        className="peer/vendor relative z-20 flex flex-1 cursor-pointer flex-col justify-center gap-1 px-6 py-4"
+                        className="peer/vendor relative z-20 flex flex-1 cursor-pointer flex-col justify-center gap-0.5 px-5 py-2.5"
                         onClick={() => setActiveSegment("vendor")}
                       >
-                        <span className="text-[13px] font-bold uppercase tracking-wide text-black/80">
+                        <span className="text-[14px] font-bold tracking-wide text-black/80">
                           Vendeurs
                         </span>
                         <input
@@ -497,7 +474,7 @@ export default function NewHome() {
                           onChange={(e) => setVendorQuery(e.target.value)}
                           placeholder="Rechercher un vendeur"
                           autoComplete="off"
-                          className="w-full bg-transparent text-sm text-black placeholder-black/40 focus:outline-none cursor-pointer focus:cursor-text"
+                          className="w-full bg-transparent text-xs text-black placeholder-black/40 focus:outline-none cursor-pointer focus:cursor-text"
                           onFocus={() => setActiveSegment("vendor")}
                           onBlur={(event) =>
                             setActiveSegment(
@@ -532,10 +509,10 @@ export default function NewHome() {
                       />
                       <label
                         htmlFor="product-search"
-                        className="peer/product relative z-20 flex flex-1 cursor-pointer flex-col justify-center gap-1 px-6 py-4"
+                        className="peer/product relative z-20 flex flex-1 cursor-pointer flex-col justify-center gap-0.5 px-5 py-2.5"
                         onClick={() => setActiveSegment("product")}
                       >
-                        <span className="text-[13px] font-bold uppercase tracking-wide text-black/80">
+                        <span className="text-[14px] font-bold tracking-wide text-black/80">
                           Produits
                         </span>
                         <input
@@ -545,7 +522,7 @@ export default function NewHome() {
                           onChange={(e) => setProductQuery(e.target.value)}
                           placeholder="Trouver un produit"
                           autoComplete="off"
-                          className="w-full bg-transparent text-sm text-black placeholder-black/40 focus:outline-none cursor-pointer focus:cursor-text"
+                          className="w-full bg-transparent text-xs text-black placeholder-black/40 focus:outline-none cursor-pointer focus:cursor-text"
                           onFocus={() => setActiveSegment("product")}
                           onBlur={(event) =>
                             setActiveSegment(
@@ -554,10 +531,10 @@ export default function NewHome() {
                           }
                         />
                       </label>
-                      <div className="relative z-10 flex items-center justify-center sm:justify-end px-4 sm:px-3 pb-4 sm:pb-0">
+                      <div className="relative z-10 flex items-center justify-center sm:justify-end px-4 sm:px-3 pb-3 sm:pb-0">
                         <button
                           type="submit"
-                          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#FF385C] text-white shadow-sm transition-transform hover:scale-[1.06] cursor-pointer"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#2980ee] text-white shadow-sm transition-transform hover:scale-[1.06] cursor-pointer"
                           aria-label="Rechercher"
                           onFocus={() => setActiveSegment("product")}
                           onBlur={(event) =>
@@ -567,8 +544,8 @@ export default function NewHome() {
                           }
                         >
                           <svg
-                            width="16"
-                            height="16"
+                            width="14"
+                            height="14"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
@@ -650,6 +627,22 @@ export default function NewHome() {
         <div className="mt-16 md:mt-2" aria-hidden />
         <SiteFooter />
       </div>
+      <LoginModal
+        open={loginOpen}
+        onClose={() => setLoginOpen(false)}
+        onSwitchToRegister={() => {
+          setLoginOpen(false);
+          setRegisterOpen(true);
+        }}
+      />
+      <RegisterModal
+        open={registerOpen}
+        onClose={() => setRegisterOpen(false)}
+        onSwitchToLogin={() => {
+          setRegisterOpen(false);
+          setLoginOpen(true);
+        }}
+      />
     </div>
   );
 }

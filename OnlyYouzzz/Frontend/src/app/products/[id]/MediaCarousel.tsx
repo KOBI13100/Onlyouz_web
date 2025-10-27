@@ -3,7 +3,7 @@ import React from "react";
 
 type MediaItem = { type: "image" | "video"; url: string };
 
-export default function MediaCarousel({ images, videos = [] }: { images: string[]; videos?: string[] }) {
+export default function MediaCarousel({ images, videos = [], topRightOverlay }: { images: string[]; videos?: string[]; topRightOverlay?: React.ReactNode }) {
   const media: MediaItem[] = React.useMemo(() => {
     const imgs = (images || []).filter(Boolean).map((u) => ({ type: "image" as const, url: u }));
     const vids = (videos || []).filter(Boolean).map((u) => ({ type: "video" as const, url: u }));
@@ -74,6 +74,13 @@ export default function MediaCarousel({ images, videos = [] }: { images: string[
           ))}
         </div>
       </div>
+
+      {/* Overlay top-right */}
+      {topRightOverlay ? (
+        <div className="absolute right-2 top-2 z-20">
+          {topRightOverlay}
+        </div>
+      ) : null}
 
       {/* Arrows */}
       {media.length > 1 ? (

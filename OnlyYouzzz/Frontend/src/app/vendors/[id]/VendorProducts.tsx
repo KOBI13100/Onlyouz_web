@@ -19,7 +19,7 @@ export default function VendorProducts({ products }: { products: P[] }) {
 
   return (
     <div>
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -40,23 +40,27 @@ export default function VendorProducts({ products }: { products: P[] }) {
       {filtered.length === 0 ? (
         <p className="text-sm text-black/60">Aucun produit.</p>
       ) : (
-        <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-4">
+        <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
           {filtered.map((p) => (
-            <div key={p.id} className="rounded-xl border border-black/10 bg-white p-3 shadow-sm transition-transform duration-200 will-change-transform hover:-translate-y-0.5 hover:shadow-md">
-              <div className="relative mb-2 aspect-[5/4] w-full overflow-hidden rounded-lg bg-black/[0.03] cursor-pointer">
+            <div
+              key={p.id}
+              className="group relative overflow-hidden rounded-[14px] bg-white/80 shadow-[inset_0_1px_8px_rgba(0,0,0,0.06)] transition-transform duration-200 will-change-transform hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.10)] cursor-pointer"
+            >
+              <div className="relative aspect-[4/5] w-full overflow-hidden bg-black/[0.03]">
                 {p.imageUrl ? (
                   <Image src={p.imageUrl} alt={p.name} fill className="object-cover" />
                 ) : (
-                  <div className="grid h-full w-full place-items-center text-xs text-black/50">Pas d'image</div>
+                  <div className="h-full w-full animate-pulse bg-black/10" />
                 )}
-                <Link href={`/products/${p.id}`} className="absolute inset-0 z-10 block" aria-label={`Voir ${p.name}`} />
-              </div>
-              <div className="space-y-0.5 text-center">
-                <div className="truncate text-[12px] font-medium">{p.name}</div>
-                <div className="text-[12px] text-black/80 font-medium">{p.price.toFixed(2)} €</div>
-                <div>
-                  <Link href={`/products/${p.id}`} className="inline-flex rounded-full bg-black text-white px-3 py-0.5 text-[11px] font-medium border border-black/10 hover:bg-black/90">Consulter</Link>
+                <div className="pointer-events-none absolute inset-0 z-10" style={{ backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.45) 75%, rgba(0,0,0,0.7) 88%, rgba(0,0,0,0.95) 100%)' }} />
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-end pb-6 px-2 text-center">
+                  <h3 className="mt-1 truncate text-xs font-medium text-white max-w-[90%]">{p.name}</h3>
+                  <div className="mt-1 text-[11px] font-normal text-white/90">{p.price.toFixed(2)} €</div>
+                  <div className="mt-2 flex justify-center">
+                    <span className="inline-flex rounded-full bg-white/95 text-black px-2.5 py-0.5 text-[10px] font-medium shadow-sm transition-transform group-hover:-translate-y-0.5 group-hover:scale-[1.03]">Consulter</span>
+                  </div>
                 </div>
+                <Link href={`/products/${p.id}`} className="absolute inset-0 z-20 block" aria-label={`Voir ${p.name}`} />
               </div>
             </div>
           ))}

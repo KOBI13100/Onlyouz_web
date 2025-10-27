@@ -13,7 +13,7 @@ export default function SellerSpaceLayout({ children }: { children: React.ReactN
 
   React.useEffect(() => {
     if (!ready) return;
-    if (!user) return router.replace("/connexion");
+    if (!user) return router.replace("/inscription");
   }, [ready, user, router]);
 
   if (!ready || !user) return null;
@@ -58,7 +58,7 @@ export default function SellerSpaceLayout({ children }: { children: React.ReactN
                       <li>
                         <Link href="/mon-espace/expeditions" className={`block rounded-md px-2 py-2 ${pathname?.includes('/expeditions') ? 'bg-black/5' : ''} hover:text-black`}>
                           <span className="inline-flex items-center gap-2">
-                            <Image src="/icon_espace/delivery_truck.svg" alt="" width={16} height={16} />
+                            <Image src={require("@/livraison.png")} alt="" width={16} height={16} />
                             <span>Mes expéditions</span>
                           </span>
                         </Link>

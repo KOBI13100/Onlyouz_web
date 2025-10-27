@@ -123,7 +123,7 @@ export default function ProductsPage() {
         {(() => {
           const displayItems: (Product | null)[] = isPaging ? Array.from({ length: pageSize }, () => null) : pageItems;
           return (
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5" data-reveal-group data-reveal-base="0" data-reveal-step="80">
+        <div className="grid gap-2 grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-6" data-reveal-group data-reveal-base="0" data-reveal-step="80">
           {displayItems.map((p, idx) => (
             <div
               key={p ? p.id : `skeleton-${idx}`}
