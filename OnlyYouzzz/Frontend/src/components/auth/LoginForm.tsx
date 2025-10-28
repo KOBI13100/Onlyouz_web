@@ -42,7 +42,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <RoleToggle value={role} onChange={setRole} />
+      <div className="text-center">
+        <RoleToggle value={role} onChange={setRole} />
+      </div>
       <div className="space-y-2">
         <label className="text-sm font-medium">Email</label>
         <input
@@ -67,13 +69,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
       </div>
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
       {success ? <p className="text-sm text-emerald-600">{success}</p> : null}
-      <button
+      <div className="text-center">
+        <button
         type="submit"
         disabled={loading}
-        className="w-fit bg-transparent px-0 py-0 text-sm font-medium text-black hover:text-black/80 rounded-none shadow-none"
+          className="inline-flex items-center justify-center rounded-full border border-black/80 bg-transparent px-5 py-2 text-sm font-medium text-black hover:bg-black hover:text-white transition-colors"
       >
         {loading ? "Connexion..." : "Se connecter"}
       </button>
+      </div>
     </form>
   );
 };

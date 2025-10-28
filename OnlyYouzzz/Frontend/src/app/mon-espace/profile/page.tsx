@@ -18,6 +18,7 @@ export default function ProfilePage() {
   const [description, setDescription] = React.useState<string>(user.description || '');
   const [dateOfBirth, setDateOfBirth] = React.useState<string>(user.dateOfBirth ? user.dateOfBirth.slice(0,10) : '');
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [gender, setGender] = React.useState<string>(user.gender || 'non précisé');
 
   React.useEffect(() => {
     if (!avatar) return;
@@ -46,6 +47,7 @@ export default function ProfilePage() {
       if (avatar) form.append('avatar', avatar);
       if (typeof description === 'string') form.append('description', description);
       if (dateOfBirth) form.append('dateOfBirth', dateOfBirth);
+      if (gender) form.append('gender', gender);
       const base = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
       const res = await fetch(`${base}/api/auth/me`, {
         method: 'PUT',
@@ -54,7 +56,7 @@ export default function ProfilePage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
-      updateUser({ name: data.name, email: data.email, verified: data.verified, lastSeen: data.lastSeen, description: data.description || '', dateOfBirth: data.dateOfBirth || null, ...(data.avatarUrl ? { avatarUrl: data.avatarUrl } : {}) } as any);
+      updateUser({ name: data.name, email: data.email, verified: data.verified, lastSeen: data.lastSeen, description: data.description || '', dateOfBirth: data.dateOfBirth || null, gender: data.gender || 'non précisé', ...(data.avatarUrl ? { avatarUrl: data.avatarUrl } : {}) } as any);
       setMessage('Profil mis à jour');
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : 'Erreur inconnue';
@@ -69,13 +71,14 @@ export default function ProfilePage() {
       {/* Header Section removed per design */}
 
       <div className="p-0">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-3 flex justify-end">
+        <div className="max-w-6xl mx-auto">
+          {/* Avatar Section */}
+          <div className="bg-white rounded-2xl border border-black/10 p-5 mb-6 shadow-sm mx-auto w-full relative">
             <button
               type="button"
               onClick={logout}
               title="Déconnexion"
-              className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-medium text-black/70 hover:text-black hover:bg-black/5"
+              className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-medium text-black/70 hover:text-black hover:bg-black/5"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -84,13 +87,10 @@ export default function ProfilePage() {
               </svg>
               Déconnexion
             </button>
-          </div>
-          {/* Avatar Section */}
-          <div className="bg-white rounded-2xl border border-black/10 p-8 mb-8 shadow-sm">
-            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-8">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
               <div className="flex flex-col items-center lg:items-start">
                 <div 
-                  className="relative h-32 w-32 overflow-hidden rounded-full bg-black/[0.05] cursor-pointer hover:bg-black/[0.08] transition-colors group mb-4"
+                  className="relative h-28 w-28 overflow-hidden rounded-full bg-black/[0.05] cursor-pointer hover:bg-black/[0.08] transition-colors group mb-3"
                   onClick={handleAvatarClick}
                 >
                   {preview ? (
@@ -110,7 +110,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={handleAvatarClick}
-                  className="rounded-full border border-black/10 bg-white px-6 py-2.5 text-sm font-medium text-black/80 hover:bg-black/5 hover:border-black/20 transition-colors"
+                  className="rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-medium text-black/80 hover:bg-black/5 hover:border-black/20 transition-colors"
                 >
                   Changer la photo
                 </button>
@@ -144,7 +144,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Informations Section */}
-          <div className="bg-white rounded-2xl border border-black/10 p-8 shadow-sm">
+          <div className="bg-white rounded-2xl border border-black/10 p-8 shadow-sm mx-auto w-full">
             <div className="mb-6 flex items-center justify-between">
               <div className="text-sm text-black/70">Statut du compte</div>
               <label className="inline-flex items-center gap-2 text-sm">
@@ -181,6 +181,25 @@ export default function ProfilePage() {
                   onChange={(e) => setDateOfBirth(e.target.value)}
                   className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10 transition-colors"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-black mb-2">Genre</label>
+                <div className="relative">
+                  <select
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="w-full appearance-none rounded-xl border border-black/10 bg-white pr-12 pl-4 py-3 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10 transition-colors"
+                  >
+                    <option value="homme">Homme</option>
+                    <option value="femme">Femme</option>
+                    <option value="non précisé">Non précisé</option>
+                  </select>
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-black/50">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </span>
+                </div>
               </div>
             </div>
           </div>

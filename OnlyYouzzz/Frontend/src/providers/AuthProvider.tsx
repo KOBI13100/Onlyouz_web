@@ -11,6 +11,7 @@ export type AuthUser = {
   lastSeen?: string | null;
   description?: string;
   dateOfBirth?: string | null;
+  gender?: string | null;
 };
 
 type AuthContextValue = {
@@ -57,6 +58,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
+    } catch {}
+    try {
+      if (typeof window !== 'undefined') {
+        const { location } = window;
+        if (location.pathname.startsWith('/mon-espace')) {
+          location.href = '/';
+          return;
+        }
+      }
     } catch {}
   }, []);
 

@@ -12,11 +12,15 @@ type RegisterFormProps = {
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
   const { login } = useAuth();
   const router = useRouter();
-  const [name, setName] = React.useState("");
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [role, setRole] = React.useState<UserRole>("acheteur");
   const [loading, setLoading] = React.useState(false);
+  const [dateOfBirth, setDateOfBirth] = React.useState<string>("");
+  const [gender, setGender] = React.useState<string>("non précisé");
+  const [username, setUsername] = React.useState<string>("");
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<string | null>(null);
 
@@ -26,12 +30,16 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
     setError(null);
     setSuccess(null);
     try {
-      onSubmit?.({ name, email, password, role });
+      const fullName = `${firstName} ${lastName}`.trim();
+      onSubmit?.({ name: fullName, email, password, role });
       const data = await postJson<{ message: string; token: string; user: { id: string; name: string; email: string; role: string } }>("/api/auth/register", {
-        name,
+        name: fullName || username,
         email,
         password,
         role,
+        dateOfBirth,
+        gender,
+        username,
       });
       setSuccess(data.message || "Compte créé");
       if (data.token && data.user) {
@@ -58,15 +66,61 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <RoleToggle value={role} onChange={setRole} />
+      <div className="scale-[0.95] origin-top">
+        <RoleToggle value={role} onChange={setRole} />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="space-y-2">
+          <label className="text-xs font-medium">Prénom</label>
+          <input
+            required
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="w-full rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
+            placeholder="Prénom"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-xs font-medium">Nom</label>
+          <input
+            required
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="w-full rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
+            placeholder="Nom"
+          />
+        </div>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Pseudo</label>
+          <input
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          className="w-full rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
+            placeholder="Ex: @onlyuser"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Genre</label>
+          <select
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+            className="w-full rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
+          >
+            <option value="homme">Homme</option>
+            <option value="femme">Femme</option>
+            <option value="non précisé">Non précisé</option>
+          </select>
+        </div>
+      </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Nom</label>
+        <label className="text-sm font-medium">Date de naissance</label>
         <input
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
-          placeholder="Votre nom"
+          type="date"
+          value={dateOfBirth}
+          onChange={(e) => setDateOfBirth(e.target.value)}
+          className="w-full rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
         />
       </div>
       <div className="space-y-2">
@@ -76,7 +130,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
+          className="w-full rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
           placeholder="vous@exemple.com"
         />
       </div>
@@ -87,7 +141,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
+          className="w-full rounded-xl border border-black/10 bg-white px-3 py-1.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
           placeholder="••••••••"
         />
       </div>
@@ -96,7 +150,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit }) => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-full bg-black px-5 py-2.5 text-sm font-medium text-white hover:bg-black/90"
+        className="w-full rounded-full border border-black/80 bg-transparent px-5 py-2 text-sm font-medium text-black hover:bg-black hover:text-white transition-colors"
       >
         {loading ? "Création..." : "Créer un compte"}
       </button>

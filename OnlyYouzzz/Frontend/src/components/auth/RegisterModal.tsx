@@ -27,9 +27,9 @@ export default function RegisterModal({ open, onClose, onSwitchToLogin }: Regist
 
   const modal = (
     <div className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} aria-hidden />
       <div className="absolute inset-0 grid place-items-center p-4">
-        <div className="relative w-full max-w-md sm:max-w-lg">
+        <div className="relative w-full max-w-2xl">
           <AuthCard title="Créer un compte" subtitle="Rejoignez Onlyouzz" onClose={onClose}>
             <RegisterForm />
             <div className="mt-4 text-center text-sm text-black/60">

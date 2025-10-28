@@ -10,9 +10,9 @@ type AuthCardProps = {
 
 const AuthCard: React.FC<AuthCardProps> = ({ title, subtitle, children, onClose }) => {
   return (
-    <div className="mx-auto w-full max-w-md rounded-3xl border border-black/10 bg-white p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] text-center">
-      <div className="relative mb-5">
-        <h1 className="text-2xl font-semibold tracking-tight leading-none">{title}</h1>
+    <div className="mx-auto w-full rounded-3xl border border-black/10 bg-white p-5 md:p-6 shadow-[0_8px_30px_rgba(0,0,0,0.06)] text-left">
+      <div className="relative mb-5 text-center">
+        <h1 className="text-xl md:text-2xl font-semibold tracking-tight leading-none">{title}</h1>
         {onClose ? (
           <button
             onClick={onClose}
@@ -33,7 +33,7 @@ const AuthCard: React.FC<AuthCardProps> = ({ title, subtitle, children, onClose 
           </button>
         ) : null}
         {subtitle ? (
-          <p className="mt-2 text-sm text-black/60">{subtitle}</p>
+          <p className="mt-2 text-xs md:text-sm text-black/60">{subtitle}</p>
         ) : null}
       </div>
       {children}

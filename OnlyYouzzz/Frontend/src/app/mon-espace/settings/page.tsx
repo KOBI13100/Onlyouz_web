@@ -59,19 +59,7 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-black/10 bg-white p-6 shadow-sm md:col-span-2">
-          <h2 className="text-sm font-semibold mb-4">Paiement</h2>
-          <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-xl border border-black/10 p-4">
-              <div className="text-xs text-black/60">Carte enregistrée</div>
-              <div className="mt-1 text-sm font-medium">•••• •••• •••• {cardLast4 || '0000'}</div>
-            </div>
-            <div className="rounded-xl border border-black/10 p-4">
-              <div className="text-xs text-black/60 mb-2">Ajouter une carte</div>
-              <button className="rounded-full bg-black px-4 py-2 text-sm font-medium text-white hover:bg-black/90">Ajouter via Stripe</button>
-            </div>
-          </div>
-        </section>
+        {/* Section Paiement retirée selon demande */}
       </div>
     </div>
   );
