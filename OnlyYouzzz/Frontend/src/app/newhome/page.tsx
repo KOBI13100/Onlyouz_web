@@ -252,7 +252,7 @@ export default function NewHome() {
                 <nav className="hidden md:flex items-center gap-8 text-base h-10 mx-auto">
                   <Link
                     href="/vendors"
-                    className="inline-flex h-10 items-center gap-2.5 text-black/80 hover:text-black"
+                    className="inline-flex h-10 items-center gap-2.5 text-black/60 hover:text-black"
                   >
                     <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/20 overflow-hidden bg-white">
                       <Image

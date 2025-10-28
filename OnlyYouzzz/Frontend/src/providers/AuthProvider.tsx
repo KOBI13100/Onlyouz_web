@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { API_BASE_URL } from "@/lib/api";
 
 export type AuthUser = {
   id: string;
@@ -42,6 +43,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {}
     setReady(true);
   }, []);
+
+  // Hydrate from backend if we have a token but missing profile fields
+  React.useEffect(() => {
+    const needsHydration = Boolean(token && (!user || user && (user.avatarUrl === undefined || user.dateOfBirth === undefined || user.gender === undefined)));
+    if (!needsHydration) return;
+    let stopped = false;
+    const load = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
+        if (!res.ok) return;
+        const me = await res.json();
+        if (stopped) return;
+        setUser(me);
+        try { localStorage.setItem(USER_KEY, JSON.stringify(me)); } catch {}
+      } catch {}
+    };
+    load();
+    return () => { stopped = true; };
+  }, [token, user]);
 
   const login = React.useCallback(({ token, user }: { token: string; user: AuthUser }) => {
     setToken(token);

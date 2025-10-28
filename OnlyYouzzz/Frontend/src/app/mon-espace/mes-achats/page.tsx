@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useAuth } from "@/providers/AuthProvider";
 
 type Order = {
@@ -81,16 +82,7 @@ export default function MesAchatsPage() {
         {loading ? (
           <div className="grid place-items-center py-10 text-sm text-black/60">Chargement…</div>
         ) : sortedOrders.length === 0 ? (
-          <div className="grid place-items-center py-16">
-            <div className="rounded-2xl border border-black/10 bg-white/70 px-6 py-8 text-center shadow-sm">
-              <div className="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-black/10">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-black/70">
-                  <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
-                </svg>
-              </div>
-              <div className="text-sm text-black/60">Aucun achat pour le moment</div>
-            </div>
-          </div>
+          <EmptyState />
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {sortedOrders.map((o) => {
@@ -144,6 +136,42 @@ export default function MesAchatsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <section className="relative overflow-hidden rounded-3xl border border-black/10 bg-white shadow-sm">
+      <div className="absolute -top-20 -left-20 h-56 w-56 rounded-full bg-gradient-to-br from-black/10 to-black/0 blur-2xl" aria-hidden />
+      <div className="absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-gradient-to-tr from-black/10 to-black/0 blur-2xl" aria-hidden />
+      <div className="relative grid place-items-center px-6 py-16 text-center">
+        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-black/5 ring-1 ring-black/10">
+          <span className="text-2xl" aria-hidden>🛍️</span>
+        </div>
+        <h2 className="mt-4 text-lg md:text-xl font-semibold tracking-tight text-black">Aucun achat pour le moment</h2>
+        <p className="mt-2 max-w-xl text-sm text-black/60">
+          Découvrez notre catalogue et commencez votre première commande. Des milliers d’articles vous attendent.
+        </p>
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link
+            href="/products"
+            className="inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-sm font-medium text-white hover:bg-black/90"
+          >
+            Explorer le catalogue
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M7 17L17 7" />
+              <path d="M7 7h10v10" />
+            </svg>
+          </Link>
+          <Link
+            href="/vendors"
+            className="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white px-5 py-2.5 text-sm font-medium text-black hover:bg-black/5"
+          >
+            Voir les vendeurs
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
 

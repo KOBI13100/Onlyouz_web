@@ -3,6 +3,7 @@ import React from "react";
 import { createPortal } from "react-dom";
 import AuthCard from "./AuthCard";
 import LoginForm from "./LoginForm";
+import { useAuth } from "@/providers/AuthProvider";
 
 type LoginModalProps = {
   open: boolean;
@@ -13,6 +14,11 @@ type LoginModalProps = {
 export default function LoginModal({ open, onClose, onSwitchToRegister }: LoginModalProps) {
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
+
+  const { user } = useAuth();
+  React.useEffect(() => {
+    if (open && user) onClose();
+  }, [open, user, onClose]);
 
   React.useEffect(() => {
     if (!open) return;

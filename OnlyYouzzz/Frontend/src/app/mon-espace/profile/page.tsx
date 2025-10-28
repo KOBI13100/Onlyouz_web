@@ -20,6 +20,17 @@ export default function ProfilePage() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [gender, setGender] = React.useState<string>(user.gender || 'non précisé');
 
+  // Keep form fields in sync if the authenticated user object updates
+  React.useEffect(() => {
+    setName(user.name);
+    setEmail(user.email);
+    setPreview(user.avatarUrl || null);
+    setVerified(Boolean(user.verified));
+    setDescription(user.description || '');
+    setDateOfBirth(user.dateOfBirth ? user.dateOfBirth.slice(0, 10) : '');
+    setGender(user.gender || 'non précisé');
+  }, [user]);
+
   React.useEffect(() => {
     if (!avatar) return;
     const url = URL.createObjectURL(avatar);
@@ -174,12 +185,20 @@ export default function ProfilePage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-black mb-2">Date de naissance</label>
+                <label className="block text-sm font-medium text-black mb-2">
+                  Date de naissance
+                  {dateOfBirth ? (
+                    <span className="ml-2 text-black/50 text-xs">(
+                      {formatAgeFR(dateOfBirth)}
+                    )</span>
+                  ) : null}
+                </label>
                 <input
                   type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
                   className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10 transition-colors"
+                  lang="fr"
                 />
               </div>
               <div>
@@ -251,6 +270,24 @@ export default function ProfilePage() {
       </div>
     </div>
   );
+}
+
+function formatAgeFR(isoDate: string): string {
+  try {
+    const [y, m, d] = isoDate.split("-");
+    if (!y || !m || !d) return "";
+    const birth = new Date(Number(y), Number(m) - 1, Number(d));
+    if (isNaN(birth.getTime())) return "";
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const hasNotHadBirthdayThisYear =
+      today.getMonth() < birth.getMonth() ||
+      (today.getMonth() === birth.getMonth() && today.getDate() < birth.getDate());
+    if (hasNotHadBirthdayThisYear) age -= 1;
+    return age <= 1 ? `${age} an` : `${age} ans`;
+  } catch {
+    return "";
+  }
 }
 
 function VerifyAction({ token, verified, onUpdated }: { token: string | null; verified: boolean; onUpdated: (v: boolean) => void }) {

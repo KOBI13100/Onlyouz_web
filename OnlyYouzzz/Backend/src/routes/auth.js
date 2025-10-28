@@ -65,7 +65,18 @@ router.post('/register', async (req, res) => {
 
     return res.status(201).json({
       message: 'Compte créé',
-      user: { id: String(insertedId), name, email: email.toLowerCase(), role, verified: false, lastSeen: doc.lastSeen },
+      user: {
+        id: String(insertedId),
+        name: doc.name,
+        email: doc.email,
+        role: doc.role,
+        verified: false,
+        lastSeen: doc.lastSeen,
+        avatarUrl: null,
+        dateOfBirth: doc.dateOfBirth || null,
+        gender: doc.gender || null,
+        description: '',
+      },
       token,
     });
   } catch (error) {
@@ -103,7 +114,18 @@ router.post('/login', async (req, res) => {
     const fresh = await users.findOne({ _id: user._id });
     return res.status(200).json({
       message: 'Connexion réussie',
-      user: { id: String(user._id), name: user.name, email: user.email, role: user.role, verified: Boolean(fresh?.verified), lastSeen: fresh?.lastSeen },
+      user: {
+        id: String(user._id),
+        name: fresh.name,
+        email: fresh.email,
+        role: fresh.role,
+        verified: Boolean(fresh?.verified),
+        lastSeen: fresh?.lastSeen,
+        avatarUrl: fresh?.avatarUrl || null,
+        dateOfBirth: fresh?.dateOfBirth || null,
+        gender: fresh?.gender || null,
+        description: fresh?.description || '',
+      },
       token,
     });
   } catch (error) {
@@ -113,6 +135,31 @@ router.post('/login', async (req, res) => {
 });
 
 module.exports = router;
+
+// Profil courant (auth requis)
+router.get('/me', authRequired, async (req, res) => {
+  try {
+    const users = getUsersCollection(req.app);
+    const { ObjectId } = require('mongodb');
+    const fresh = await users.findOne({ _id: new ObjectId(req.user.sub) });
+    if (!fresh) return res.status(404).json({ error: 'Introuvable' });
+    return res.status(200).json({
+      id: String(fresh._id),
+      name: fresh.name,
+      email: fresh.email,
+      role: fresh.role,
+      avatarUrl: fresh.avatarUrl || null,
+      verified: Boolean(fresh.verified),
+      lastSeen: fresh.lastSeen || null,
+      description: fresh.description || '',
+      dateOfBirth: fresh.dateOfBirth || null,
+      gender: fresh.gender || null,
+    });
+  } catch (e) {
+    console.error('me error', e);
+    return res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
 
 // Récupérer un utilisateur (public: nom, email, avatar, rôle)
 router.get('/user/:id', async (req, res) => {
