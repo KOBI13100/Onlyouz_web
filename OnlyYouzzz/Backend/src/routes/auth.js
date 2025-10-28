@@ -19,8 +19,8 @@ function getUsersCollection(app) {
 
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, role } = req.body || {};
-    if (!name || !email || !password || !role) {
+    const { name, email, password, role, dateOfBirth, gender, username } = req.body || {};
+    if (!email || !password || !role) {
       return res.status(400).json({ error: 'Champs requis manquants' });
     }
     if (!['acheteur', 'vendeur'].includes(role)) {
@@ -35,7 +35,7 @@ router.post('/register', async (req, res) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
     const doc = {
-      name,
+      name: name || username || email.split('@')[0],
       email: email.toLowerCase(),
       passwordHash,
       role,
@@ -44,6 +44,14 @@ router.post('/register', async (req, res) => {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+    if (typeof dateOfBirth === 'string' && dateOfBirth.trim()) {
+      const d = new Date(dateOfBirth);
+      if (!isNaN(d.getTime())) doc.dateOfBirth = d.toISOString();
+    }
+    if (typeof gender === 'string') {
+      const g = gender.toLowerCase();
+      doc.gender = g.startsWith('homme') ? 'homme' : g.startsWith('femme') ? 'femme' : 'non précisé';
+    }
 
     const { insertedId } = await users.insertOne(doc);
 
@@ -122,18 +130,24 @@ router.get('/user/:id', async (req, res) => {
   }
 });
 
-// Mise à jour du profil (nom, email, avatar, description, dateOfBirth) pour l'utilisateur connecté
+// Mise à jour du profil (nom, email, avatar, description, dateOfBirth, gender) pour l'utilisateur connecté
 router.put('/me', authRequired, upload.single('avatar'), async (req, res) => {
   try {
     const users = getUsersCollection(req.app);
     const updates = {};
-    const { name, email, description, dateOfBirth } = req.body || {};
+    const { name, email, description, dateOfBirth, gender } = req.body || {};
     if (name) updates.name = name;
     if (email) updates.email = email.toLowerCase();
     if (typeof description === 'string') updates.description = description.slice(0, 1000);
     if (typeof dateOfBirth === 'string' && dateOfBirth.trim()) {
       const d = new Date(dateOfBirth);
       if (!isNaN(d.getTime())) updates.dateOfBirth = d.toISOString();
+    }
+    if (typeof gender === 'string') {
+      const g = gender.toLowerCase();
+      if (['homme','femme','non précisé','non precise','non_precise','none',''].includes(g)) {
+        updates.gender = g.startsWith('homme') ? 'homme' : g.startsWith('femme') ? 'femme' : 'non précisé';
+      }
     }
 
     // Upload avatar si fourni et Cloudinary configuré (réutilise la conf globale éventuelle)
@@ -182,6 +196,7 @@ router.put('/me', authRequired, upload.single('avatar'), async (req, res) => {
       lastSeen: fresh.lastSeen || null,
       description: fresh.description || '',
       dateOfBirth: fresh.dateOfBirth || null,
+      gender: fresh.gender || null,
     });
   } catch (error) {
     console.error('update profile error', error);
