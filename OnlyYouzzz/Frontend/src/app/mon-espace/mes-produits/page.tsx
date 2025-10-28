@@ -79,10 +79,10 @@ export default function MesProduitsPage() {
     <div className="space-y-6">
       {open && (
         <div className="fixed inset-0 z-[200] grid place-items-center bg-black/50 backdrop-blur-md p-4">
-          <div className="w-full max-w-4xl max-h-[88vh] overflow-hidden rounded-2xl border border-black/10 bg-white/95 backdrop-blur px-5 py-4 shadow-2xl">
-            <div className="mb-3 flex items-center justify-between">
-              <div className="text-lg font-semibold">Ajouter un produit</div>
-              <button onClick={() => setOpen(false)} className="rounded-full border border-black/10 bg-white px-3 py-1 text-sm hover:bg-black/5">Fermer</button>
+          <div className="w-full max-w-3xl max-h-[100vh] overflow-hidden rounded-3xl border border-black/10 bg-white px-6 md:px-8 py-6 shadow-2xl">
+            <div className="mb-5 flex items-center justify-between">
+              <div className="text-xl font-semibold">Ajouter un produit</div>
+              <button onClick={() => setOpen(false)} className="rounded-full border border-black/10 bg-white px-4 py-1.5 text-sm font-medium text-black hover:bg-black/5">Fermer</button>
             </div>
             <ProductForm
               onCreated={() => {
