@@ -173,43 +173,28 @@ const ProductForm: React.FC<ProductFormProps> = ({ onCreated }) => {
         </section>
       </div>
 
-      {/* Pricing & Tags */}
+      {/* Tags only */}
       <section className="rounded-2xl border border-black/10 bg-white p-5 shadow-sm">
-        <div className="text-sm font-semibold text-black mb-3">Tarification et tags</div>
-        <div className="grid gap-4 md:grid-cols-12">
-          <div className="md:col-span-3">
-            <label className="text-xs font-medium">Prix (€)</label>
-            <input
-              required
-              type="number"
-              min="0"
-              step="0.01"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
-            />
+        <div className="text-sm font-semibold text-black mb-3">Tags</div>
+        <div className="md:col-span-12">
+          <div className="mt-1 flex flex-wrap items-center gap-1.5">
+            {tags.map((t) => (
+              <span key={t} className="inline-flex items-center gap-1 rounded-full bg-black/5 px-2.5 py-0.5 text-[11px] font-medium">
+                #{t}
+                <button type="button" onClick={() => onRemoveTag(t)} className="ml-1 text-black/50 hover:text-black">×</button>
+              </span>
+            ))}
           </div>
-          <div className="md:col-span-9">
-            <label className="text-xs font-medium">Tags</label>
-            <div className="mt-1 flex flex-wrap items-center gap-1.5">
-              {tags.map((t) => (
-                <span key={t} className="inline-flex items-center gap-1 rounded-full bg-black/5 px-2.5 py-0.5 text-[11px] font-medium">
-                  #{t}
-                  <button type="button" onClick={() => onRemoveTag(t)} className="ml-1 text-black/50 hover:text-black">×</button>
-                </span>
-              ))}
-            </div>
-            <div className="mt-2 flex items-center gap-1.5">
-              <span className="text-black/60 text-xs">#</span>
-              <input
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onAddTag(); } }}
-                placeholder="ajouter un tag et Entrée"
-                className="flex-1 rounded-xl border border-black/10 bg-white px-3.5 py-2 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
-              />
-              <button type="button" onClick={onAddTag} className="rounded-full border border-black/10 bg-white px-3.5 py-2 text-sm hover:bg-black/5">Ajouter</button>
-            </div>
+          <div className="mt-2 flex items-center gap-1.5">
+            <span className="text-black/60 text-xs">#</span>
+            <input
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); onAddTag(); } }}
+              placeholder="ajouter un tag et Entrée"
+              className="flex-1 rounded-xl border border-black/10 bg-white px-3.5 py-2 text-sm focus:border-black/20 focus:ring-2 focus:ring-black/10"
+            />
+            <button type="button" onClick={onAddTag} className="rounded-full border border-black/10 bg-white px-3.5 py-2 text-sm hover:bg-black/5">Ajouter</button>
           </div>
         </div>
       </section>
